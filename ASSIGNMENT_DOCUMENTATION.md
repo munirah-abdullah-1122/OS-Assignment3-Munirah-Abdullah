@@ -319,7 +319,7 @@ Average Waiting Time: 38871ms
 
 ### What I learned about synchronization:
 
-[6-8 sentences about key concepts, challenges, insights]
+Because threads can access shared data simultaneously, I learned that synchronization is crucial in multithreaded programs. The execution log, total waiting time, and counter variables were the shared resources in this assignment. I discovered that even if the software occasionally seems to function well, race situations can still occur. This is due to the fact that the system controls the thread execution order, which might vary across runs. I also discovered that crucial areas where shared variables are updated can be secured with ReentrantLock. Also, because it regulates access to a finite resource, like the simulated CPU in this assignment, semaphores are distinct. I discovered that try-finally is essential since it ensures the release of locks and semaphore permits. All things considered, this project assisted me in making the connection between actual Java code and the operating system concepts of critical sections, mutual exclusion, race situations, and deadlock avoidance.
 
 ---
 
@@ -327,15 +327,15 @@ Average Waiting Time: 38871ms
 
 Give TWO examples where synchronization is critical:
 
-**Example 1**: 
+**Example 1**: Banking systems are a real-world example where synchronization is critical. If two transactions update the same bank account balance at the same time without synchronization, the final balance may become incorrect.
 
-**Example 2**: 
+**Example 2**: Online ticket or appointment booking systems also need synchronization. If two users try to reserve the same seat or appointment slot at the same time, the system must prevent both users from getting the same resource.
 
 ---
 
 ### How I would explain synchronization to others:
 
-[Explain to someone who just finished Assignment 1 - use simple terms and analogies]
+Synchronization is a method of organizing access to shared resources, in my opinion. Consider multiple students attempting to write simultaneously on the same whiteboard. The outcome will be clumsy and inaccurate if they all write together. Giving the marker to just one learner at a time is analogous to using a lock. Similar to that whiteboard, shared variables in programming require threads to update them in turn. Similar in nature, a semaphore regulates the number of users who can access a resource simultaneously. In this assignment, the Semaphore let only one process to use the simulated CPU at a time, while the ReentrantLock safeguarded the shared counters and log.
 
 ---
 
