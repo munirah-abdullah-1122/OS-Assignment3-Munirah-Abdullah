@@ -166,52 +166,63 @@ Because only one thread may update any counter at a time, coarse-grained locking
 
 ### Critical Section #1: Counter Variables
 
-**Which variables**: 
+**Which variables**: contextSwitchCount, completedProcessCount, and totalWaitingTime.
 
-**Why they need protection**: 
+**Why they need protection**: They are shared by the multiple threads and updated concurrently.
 
-**Synchronization mechanism used**: 
+**Synchronization mechanism used**: I used ReentrantLock.
 
 **Code snippet**:
 ```java
-// Paste your implementation here
+    lock.lock();
+    try {
+        contextSwitchCount++;
+    } finally {
+        lock.unlock();
+    }
 ```
 
-**Justification**: 
+**Justification**: Using lock makes each counter update safe because only one thread can enter the counter critical section at a time. The finally block is important because it releases the lock even if an error happens.
 
 ---
 
 ### Critical Section #2: Execution Log
 
-**What resource**: 
+**What resource**: executionLog  ArrayList.
 
-**Why it needs protection**: 
+**Why it needs protection**:  ArrayList is not thread-safe.
 
-**Synchronization mechanism used**: 
+**Synchronization mechanism used**:  I used ReentrantLock .
 
 **Code snippet**:
 ```java
-// Paste your implementation here
+    lock.lock();
+    try {
+        executionLog.add(message);
+    } finally {
+        lock.unlock();
+    }
 ```
 
-**Justification**: 
+**Justification**: The Lock makes sure that only one thread can add a log entry at a time. I used a separate lock for the log so log updates do not unnecessarily block the counter updates.
 
 ---
 
 ### Critical Section #3: CPU Semaphore
 
-**Purpose of semaphore**: 
+**Purpose of semaphore**: The semaphore is used to control access to the CPU execution part of the simulation. 
 
-**Number of permits and why**: 
-
-**Where implemented**: 
+**Number of permits and why**: I used one (simulation single CPU).
+**Where implemented**: Inside SharedResources and used in the run() method and runToCompletion() method.
 
 **Code snippet**:
 ```java
-// Paste your implementation here
+        SharedResources.cpuSemaphore.acquire();
+        ...
+        SharedResources.cpuSemaphore.release();
 ```
 
-**Effect on program behavior**: 
+**Effect on program behavior**: The semaphore prevents more than one process from entering the CPU execution section at the same time. This makes the simulation closer to a single-CPU scheduler and avoids uncontrolled concurrent CPU execution.
 
 ---
 
