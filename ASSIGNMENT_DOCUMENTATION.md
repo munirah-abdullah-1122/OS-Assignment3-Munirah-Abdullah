@@ -134,8 +134,9 @@ The executionLog is connected to the second race situation. Every process thread
 **Q**: Explain the difference between ReentrantLock and Semaphore. Where did you use each in your code and why?
 
 **Your Answer**:
+When a thread requires exclusive access to a crucial part, ReentrantLock is typically utilized. I used it in this assignment to safeguard shared data that should only be modified by a single thread at a time. I used logLock for the shared execution log and counterLock for the counter variables.
 
-[Your answer here - explain your implementation choices]
+Semaphore differs in that it regulates the number of threads that can access a resource concurrently. To represent a single CPU, I used cpuSemaphore with a single permission. This implies that the CPU execution region can only be accessed by one process at a time. Thus, the semaphore regulates the number of processes utilizing the CPU resource, while the locks safeguard shared variables.
 
 ---
 
@@ -143,8 +144,9 @@ The executionLog is connected to the second race situation. Every process thread
 **Q**: What is deadlock? Explain TWO prevention techniques and what you did to prevent deadlocks in your code.
 
 **Your Answer**:
+When threads are stuck waiting for resources that are never released, deadlock occurs. For instance, other threads can have to wait indefinitely if a thread takes a lock and fails to unlock it.
 
-[Your answer here - reference try-finally blocks, lock ordering, etc.]
+Releasing locks and semaphores within finally blocks is one method to avoid deadlock. In order to release the lock or semaphore even in the event of an exception or interruption, I incorporated this into my code. Avoiding holding locks for extended periods of time is another strategy. The locked parts in my solution are brief and simply include the shared updates themselves, such adding a log message or increasing a number. This lessens the possibility that threads will block one another for an extended period of time.
 
 ---
 
@@ -156,9 +158,8 @@ The executionLog is connected to the second race situation. Every process thread
 - Given that the three counters are independent, which approach provides better concurrency and why?
 
 **Your Answer**:
-
-[Your answer here - explain coarse-grained vs fine-grained locking, independence of counters, concurrency implications. Show understanding of when to use each approach. 5-8 sentences expected.]
-
+I used a single lock (coarse-grained locking) to protect all three counters. I selected this architecture since the code is simpler and easier to maintain when there is just one lock and the counter operations are extremely modest.
+Because only one thread may update any counter at a time, coarse-grained locking can restrict concurrency despite being simpler to implement and comprehend. Each counter would have its own lock in a fine-grained design. Separate locks would enable improved concurrency because many counters might be updated simultaneously due to their independence. However, since the counter updates for this assignment are brief, it makes sense and is obvious to use a single counter lock.
 ---
 
 ## Part 3: Synchronization Analysis (1 mark)
