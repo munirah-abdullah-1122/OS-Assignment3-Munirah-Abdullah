@@ -215,6 +215,10 @@ class Process implements Runnable {
     
     public void runToCompletion() {
         // TODO: Similar synchronization needed here
+
+     try {                                 //////commit 9-line241
+    SharedResources.cpuSemaphore.acquire();
+
         try {
             System.out.println(Colors.BRIGHT_CYAN + "  ⚡ " + Colors.BOLD + Colors.CYAN + name + 
                               Colors.RESET + Colors.BRIGHT_CYAN + " is the last process, running to completion" + 
@@ -233,6 +237,13 @@ class Process implements Runnable {
         } catch (InterruptedException e) {
             System.out.println(Colors.RED + "  ✗ " + name + " was interrupted." + Colors.RESET);
         }
+
+        } catch (InterruptedException e1) {    ///////commit 9 
+            e1.printStackTrace();
+        } finally { 
+        SharedResources.cpuSemaphore.release();
+        }
+
     }
     
     public String getName() {
