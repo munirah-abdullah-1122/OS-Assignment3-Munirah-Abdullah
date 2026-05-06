@@ -233,49 +233,85 @@ Because only one thread may update any counter at a time, coarse-grained locking
 
 **Testing procedure**: 
 ```bash
-# Commands used (run the program at least 5 times)
+javac SchedulerSimulationSync.java
+java SchedulerSimulationSync
+java SchedulerSimulationSync
+java SchedulerSimulationSync
+java SchedulerSimulationSync
+java SchedulerSimulationSync
 ```
 
 **Results**: 
-(Show that running multiple times produces consistent, correct results)
+═══ Synchronization Statistics ═══
+Total Context Switches: 24
+Total Completed Processes: 14
+Total Waiting Time: 544207ms
+Average Waiting Time: 38871ms
 
-**Why synchronization is necessary**: 
-(Explain what race conditions COULD occur without synchronization, even if you didn't observe them. Explain which shared resources need protection and why.)
+═══ Process Summary Table ═══
+Process    Priority     Burst Time   Waiting Time
+────────────────────────────────────────────────
+P1         5            2296         42          
+P2         4            3656         2333        
+P3         5            3707         5996        
+P4         3            3528         9707        
+P5         1            2548         13238       
+P6         5            5602         47875       
+P7         4            9858         65387       
+P8         2            4890         53543       
+P9         1            6519         54437       
+P10        1            4843         56959       
+P11        5            7669         57804       
+P12        5            7869         61475       
+P13        3            8252         67305       
+P14        2            3726         48106       
 
-**Conclusion**: 
+═══ Execution Log Summary ═══
+Total log entries: 48
+
+**Why synchronization is necessary**: Because the program uses multiple threads that share resources, synchronization is required. Multiple threads may update shared counter variables like contextSwitchCount, completedProcessCount, and totalWaitingTime. If two threads execute an update like contextSwitchCount++ simultaneously without a lock, one of the updates could be lost. Because the executionLog is an ArrayList, which is not thread-safe, it also requires protection. Multiple threads could add log messages simultaneously without synchronization, which could result in missing entries, an inaccurate log size, or a ConcurrentModificationException.
+
+
+**Conclusion**: The synchronized program correct operation is verified by the consistency test. The fact that the number of finished processes is equal to the number of created processes is the most significant outcome. The synchronization adjustments did not disrupt the scheduler and helped safeguard the shared data because 14 processes were generated and 14 processes were finished.
 
 ---
 
 ### Test 2: Exception Testing
 **What I tested**: Checking for ConcurrentModificationException
 
-**Testing procedure**: 
+**Testing procedure**: After adding logLock to the logExecution(String message) method, I ran the application multiple times. I kept an eye on the terminal output throughout each run until the program reached the last Execution Log Summary section. Specifically, I looked for instances of the program crashing, stopping, or displaying ConcurrentModificationException.
 
-**Results**: 
+**Results**: ConcurrentModificationException was not thrown during the program's normal completion. The Execution Log Summary section was successfully reached by the end output. The application showed Total log entries: 48 in my output. This indicates that the software was able to display the final summary without crashing and that the execution log was updated during the experiment. 
 
-**What this proves**: 
+**What this proves**: This proves how effectively مock is safeguarding executionLog. ExecutionLog should not be altered simultaneously by several threads because it is a shared ArrayList.Only one thread may add a log entry at a time if executionLog.add(message) is placed inside a locked critical section. This makes the program's logging component more dependable and stops dangerous concurrent change.
 
 ---
 
 ### Test 3: Correctness Verification
-**What I tested**: Verifying correct final values (total burst time, context switches, etc.)
+**What I tested**: I tested the correctness of the final statistics printed by the program. I focused on the number of completed processes, context switches, waiting time, and execution log entries.
 
-**Expected values**: 
+**Expected values**: The number of Completed Processes should be equal to the number of processes generated at the beginning of the program. In my output, the header showed Processes: 14, so the expected value for Total Completed Processes was 14.
+The context switch count was expected to be greater than or equal to the number of processes because some processes may need more than one CPU quantum. 
+The execution log entries were also expected to be greater than the number of processes because each process can generate more than one log message, such as starting, yielding, or completing execution.
 
 **Actual values**: 
+Total Context Switches: 24
+Total Completed Processes: 14
+Total Waiting Time: 544207ms
+Average Waiting Time: 38871ms
 
-**Analysis**: 
+**Analysis**: The final values are correct because all generated processes completed execution. The completed process count is exactly 14, which matches the number of created processes. The context switch count is 24 because several processes had burst times larger than the time quantum, so they did not finish in one turn and had to return to the ready queue. The waiting time values are calculated based on each process completion time, creation time, and burst time. The execution log count is also reasonable because the program logs multiple events for each process. Overall, the statistics show that the scheduler finished all processes and the shared counters were updated correctly.
 
 ---
 
 ### Test 4: Different Scenarios
-**Scenario tested**: [e.g., different time quantum, more processes, etc.]
+**Scenario tested**: I tested different execution scenarios within the same scheduler run. Some processes had burst times less than or equal to the time quantum and finished in one CPU turn, while other processes had burst times greater than the time quantum and needed multiple turns.
 
-**Purpose**: 
+**Purpose**: To verify that the synchronization code works for different process behaviors. A process may finish immediately, or it may yield the CPU and return to the ready queue. Both cases access shared resources, so both paths must be protected.
 
-**Results**: 
+**Results**: The program handled both types of processes correctly. Shorter processes such as processes with burst times less than the time quantum completed after one execution. Longer processes such as P7 and P13 needed more than one CPU quantum, so they yielded the CPU and were added back to the ready queue. At the end, the final output still showed Total Completed Processes: 14, meaning all processes completed successfully.
 
-**What I learned**: 
+**What I learned**: I learned that all paths that access common data, not only the most visible portion of the code, need to be synchronized. A process updates the execution log even if it gives up the CPU. The completed process counter and total waiting time are updated when a process is finished. This implies that both the completion path and the yielding path need to be secure. Additionally, I discovered that since synchronization issues might only arise in specific execution pathways, testing should incorporate various process behaviors.
 
 ---
 
