@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
-import java.util.concurrent.locks.ReentrantLock; ///////commit 2 -line43
+import java.util.concurrent.Semaphore;
+ //////////commit 3 -line49
+import java.util.concurrent.locks.ReentrantLock;  ///////commit 2 -line44
 
 // ANSI Color Codes for enhanced terminal output
 class Colors {
-    public static final String RESET = "\u001B[0m";
+    public static final String RESET = "\u001B[0m"; 
     public static final String BOLD = "\u001B[1m";
     public static final String CYAN = "\u001B[36m";
     public static final String GREEN = "\u001B[32m";
@@ -39,12 +41,14 @@ class SharedResources {
     
     // TODO #1: Add a ReentrantLock(s) here to protect critical sections
     // Example: public static final ReentrantLock lock = new ReentrantLock();
-    
+
     public static final ReentrantLock lock = new ReentrantLock(); //////commit 2
 
     // TODO #2: Add a Semaphore to limit concurrent process execution
     // Example: public static final Semaphore cpuSemaphore = new Semaphore(1);
     
+    public static final Semaphore cpuSemaphore = new Semaphore(1); //////commit 3
+
     // Method to increment context switch counter
     public static void incrementContextSwitch() {
         // TODO: Protect this critical section with a lock
