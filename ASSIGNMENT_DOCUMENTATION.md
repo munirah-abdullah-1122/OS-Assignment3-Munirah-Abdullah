@@ -2,7 +2,7 @@
 
 **Student Name**: [Munirah Abdullah Albassam]  
 **Student ID**: [445052165]  
-**Date Submitted**: [Submission Date]
+**Date Submitted**: [May 6, 2026]
 
 ---
 
@@ -14,9 +14,9 @@
 > Set sharing to "Anyone with the link can view".
 > Test the link in incognito/private mode before submitting.
 
-**Video Link**: [Paste your personal Gmail Google Drive link here]
+**Video Link**: https://drive.google.com/file/d/1y-wHX4Lf_lF0qF1l9f_l97ViMin71ln0/view?usp=sharing
 
-**Video filename**: `[YourStudentID]_Assignment3_Synchronization.mp4`
+**Video filename**: `445052165_Assignment3_Synchronization.mp4`
 
 **Verification**:
 - [ ] Link is accessible (tested in incognito mode)
@@ -341,30 +341,42 @@ Synchronization is a method of organizing access to shared resources, in my opin
 
 ## Part 6: GitHub Repository Information
 
-**Repository URL**: 
+**Repository URL**: https://github.com/munirah-abdullah-1122/OS-Assignment3-Munirah-Abdullah.git
 
-**Number of commits**: 
+**Number of commits**: 14
 
 **Commit messages**: 
-1. 
-2. 
-3. 
-4. 
-
+1. change my student id to 445052165
+2. Add ReentrantLock and import package
+3. add Semaphore and import package for synchronization
+4. Protect shared variable contextSwitchCount using ReentrantLock (lock and unlock)
+5. Protect shared variable completedProcessCount using ReentrantLock (lock and unlock)
+6. Protect shared variable totalWaitingTime using ReentrantLock (lock and unlock)
+7. Protect executionLog
+8. use Semaphore to Control CPU access in process execution and in finally release SharedResources semaphore
+9. apply Semaphore in runToCompletion method
+10. answering Part 1 Development Log question
+11. answering Part 2 Technical Questions questions
+12. answering Part 3 Synchronization Analysis questions
+13. answering Part 4: Testing and Verification questions
+14. answer Part 5: Reflection and Learning questions
 ---
 
 ## Summary
 
-**Total time spent on assignment**: 
+**Total time spent on assignment**: one day
 
 **Key takeaways**: 
-1. 
-2. 
-3. 
+1. Race conditions can happen when multiple threads access and update shared data without protection.
+2. ReentrantLock can be useful for safeguarding important areas like shared lists and counters.
+3. For managing access to scarce resources like the single CPU in this simulation, semaphores are helpful.
+
 
 **Most challenging aspect**: 
+Making ensuring that each shared resource was safeguarded in the correct place was the most difficult part. In order to prevent deadlock, I also had to ensure that each lock and semaphore permit was released within a final block.
 
 **What I'm most proud of**: 
+I am most proud that the final program runs successfully and completes all generated processes. I was also able to apply operating system synchronization concepts, such as mutual exclusion and semaphores, directly in the Java scheduler simulation.
 
 ---
 
